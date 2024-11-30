@@ -1,13 +1,16 @@
-import logo from './logo.svg';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
-import Home from "./pages/Home";
+import {BrowserRouter} from "react-router-dom";
+import AppRoutes from "./navigation/AppRoutes";
 import Navbar from "./assets/Navbar";
 
 function App() {
   return (
     <div className="App">
-        <Navbar/>
-      <Home/>
+        <BrowserRouter>
+            <Navbar/>
+            <AppRoutes />
+        </BrowserRouter>
     </div>
   );
 }

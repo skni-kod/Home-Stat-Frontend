@@ -1,7 +1,12 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function Navbar() {
-    //TODO: Navigation to Registration/Login
+    const navigate = useNavigate();
+    const handleRedirectToRegister = () => {
+        navigate("/register");
+    }
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -20,7 +25,7 @@ export default function Navbar() {
                     >
                         <span className="navbar-toggler-icon"></span>
                     </button>
-                    <button>
+                    <button onClick={handleRedirectToRegister}>
                         Add User
                     </button>
                 </div>
