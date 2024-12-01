@@ -1,16 +1,11 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
+import {useRedirect} from "../navigation/RedirectHandlers";
 
 export default function Navbar() {
-    const navigateToRegister = useNavigate();
-    const handleRedirectToRegister = () => {
-        navigateToRegister("/register");
-    }
-    const navigateToHome = useNavigate();
-    const handleRedirectToHome = () => {
-        navigateToHome("/");
-    }
-
+    const handleRedirectToRegister = useRedirect('/register');
+    const handleRedirectToLogin = useRedirect('/login');
+    const handleRedirectToHome = useRedirect('/');
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -31,6 +26,9 @@ export default function Navbar() {
                     </button>
                     <button onClick={handleRedirectToRegister}>
                         Add User
+                    </button>
+                    <button onClick={handleRedirectToLogin}>
+                        Login
                     </button>
                 </div>
             </nav>

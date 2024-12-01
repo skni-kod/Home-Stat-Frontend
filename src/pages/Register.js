@@ -135,21 +135,7 @@ export default function Register() {
                     </div>
                 </div>
 
-                {/* Role (Static) */}
-                <div className="mb-3 row">
-                    <label htmlFor="inputRole" className="col-sm-2 col-form-label">Role</label>
-                    <div className="col-sm-10">
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputRole"
-                            name="role"
-                            value={formData.role}
-                            readOnly
-                        />
-                    </div>
-                </div>
-
+               
                 {/* Error Message */}
                 {formError && (
                     <div className="alert alert-danger" role="alert">
