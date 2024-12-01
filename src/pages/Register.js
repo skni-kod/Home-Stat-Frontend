@@ -1,13 +1,9 @@
-import React, {useState} from 'react';
-import {useNavigate} from "react-router-dom";
+import React, { useState } from 'react';
+import { useRedirect } from "../navigation/RedirectHandlers";
 //https://getbootstrap.com/docs/5.3/forms/form-control/
 export default function Register() {
-    //Redirect to Login
-    const navigate = useNavigate();
-    const handleRedirectToLogin = () => {
-        navigate('/Login');
-    };
-
+    const handleRedirectToLogin = useRedirect('/Login');
+    const handleRedirectToProfile = useRedirect('/Profile');
     // Initialize state for form fields
     const [formData, setFormData] = useState({
         firstName: '',
@@ -16,6 +12,8 @@ export default function Register() {
         password: '',
         role: 'USER' // Static role
     });
+
+    const [formError, setFormError] = useState(null); // To store form validation error messages
 
     // Handle form input change
     const handleChange = (e) => {
@@ -26,11 +24,29 @@ export default function Register() {
         }));
     };
 
+    // Validate form data before submission
+    const validateForm = () => {
+        const { firstName, lastName, email, password } = formData;
+        if (!firstName || !lastName || !email || !password) {
+            setFormError("All fields are required!");
+            return false;
+        }
+        setFormError(null); // Clear error if validation passes
+        return true;
+    };
+
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Form submission logic (e.g., send data to an API)
-        console.log('Form Submitted:', formData);
+
+        // Validate the form before proceeding
+        if (validateForm()) {
+            // Form submission logic (e.g., send data to an API)
+            console.log('Form Submitted:', formData);
+
+            // Redirect to the profile page after successful form submission
+            handleRedirectToProfile();
+        }
     };
 
     return (
@@ -116,15 +132,27 @@ export default function Register() {
                     </div>
                 </div>
 
+                {/* Error Message */}
+                {formError && (
+                    <div className="alert alert-danger" role="alert">
+                        {formError}
+                    </div>
+                )}
+
                 {/* Submit Button */}
                 <div className="mb-3 row">
                     <div className="col-sm-10 offset-sm-2">
-                        <button type="submit" className="btn btn-primary">Register</button>
+                        <button
+                            type="submit"
+                            className="btn btn-primary"
+                        >
+                            Register
+                        </button>
                     </div>
                 </div>
             </form>
 
-            {/* Redirect to Login Button */}
+            {/*Redirect to Login button*/}
             <div className="mb-3 row">
                 <div className="col-sm-10 offset-sm-2">
                     <button

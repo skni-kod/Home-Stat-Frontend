@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useRedirect} from "../navigation/RedirectHandlers";
 
 export default function Login() {
+
+    const handleRedirectToRegister = useRedirect('/register');
+    const handleRedirectToHome = useRedirect('/');
     // Initialize state for form fields
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
-
-    // useNavigate hook for redirecting
-    const navigate = useNavigate();
 
     // Handle form input change
     const handleChange = (e) => {
@@ -28,7 +28,7 @@ export default function Login() {
 
         // For now, simulate successful login and redirect to home page
         // In a real app, you would handle the response from the login API here
-        navigate('/');
+        handleRedirectToHome();
     };
 
     return (
@@ -81,7 +81,7 @@ export default function Login() {
                     <button
                         type="button"
                         className="btn btn-link"
-                        onClick={() => navigate('/Register')}
+                        onClick={handleRedirectToRegister}
                     >
                         Don't have an account? Register
                     </button>

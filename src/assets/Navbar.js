@@ -2,16 +2,20 @@ import React from "react";
 import {useNavigate} from "react-router-dom";
 
 export default function Navbar() {
-    const navigate = useNavigate();
+    const navigateToRegister = useNavigate();
     const handleRedirectToRegister = () => {
-        navigate("/register");
+        navigateToRegister("/register");
+    }
+    const navigateToHome = useNavigate();
+    const handleRedirectToHome = () => {
+        navigateToHome("/");
     }
 
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="#">
+                    <a className="navbar-brand" href="" onClick={handleRedirectToHome}>
                         Home Stat
                     </a>
                     <button
