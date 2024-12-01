@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import {useRedirect} from "../navigation/RedirectHandlers";
+import { useRedirect } from '../navigation/RedirectHandlers';
+import { useUser } from '../context/UserContext'; // Import the context
 
 export default function Login() {
-
+    const { loginUser } = useUser(); // Get the loginUser function from context
     const handleRedirectToRegister = useRedirect('/register');
-    const handleRedirectToHome = useRedirect('/');
+    const handleRedirectToProfile = useRedirect('/profile');
+
     // Initialize state for form fields
     const [formData, setFormData] = useState({
         email: '',
@@ -23,12 +25,18 @@ export default function Login() {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Login logic (e.g., send data to API or check credentials)
-        console.log('Login attempted with:', formData);
 
-        // For now, simulate successful login and redirect to home page
-        // In a real app, you would handle the response from the login API here
-        handleRedirectToHome();
+        // Simulate a successful login with the entered email
+        const loggedInUser = {
+            email: formData.email,
+            name: 'John Doe',  //TODO: get user's name from database (findByEmail)
+        };
+
+        // Update the user data in context
+        loginUser(loggedInUser);
+
+        // Simulate redirect to profile
+        handleRedirectToProfile();
     };
 
     return (
