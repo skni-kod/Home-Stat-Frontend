@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useRedirect } from "../navigation/RedirectHandlers";
-//https://getbootstrap.com/docs/5.3/forms/form-control/
+
 export default function Register() {
     const handleRedirectToLogin = useRedirect('/Login');
     const handleRedirectToProfile = useRedirect('/Profile');
+
     // Initialize state for form fields
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        role: 'USER' // Static role
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        role: "USER" // Static role
     });
 
     const [formError, setFormError] = useState(null); // To store form validation error messages
+    const [isSubmitting, setIsSubmitting] = useState(false); // To show a loading indicator while submitting
 
     // Handle form input change
     const handleChange = (e) => {
@@ -36,16 +39,31 @@ export default function Register() {
     };
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validate the form before proceeding
         if (validateForm()) {
-            // Form submission logic (e.g., send data to an API)
-            console.log('Form Submitted:', formData);
+            try {
+                setIsSubmitting(true); // Set submitting state to true
+                // Send form data to the backend API
+                const response = await axios.post('http://localhost:1111/register', formData, {
+                    headers: {
+                        'Content-Type': 'application/json', // Ensure that the content type is set to JSON
+                    }
+                });
 
-            // Redirect to the profile page after successful form submission
-            handleRedirectToProfile();
+                console.log('Response from server:', response.data);
+
+                // Redirect to the profile page after successful form submission
+                handleRedirectToProfile();
+
+            } catch (error) {
+                console.error('Error during form submission:', error);
+                setFormError('An error occurred while submitting the form. Please try again.');
+            } finally {
+                setIsSubmitting(false); // Set submitting state back to false
+            }
         }
     };
 
@@ -145,14 +163,15 @@ export default function Register() {
                         <button
                             type="submit"
                             className="btn btn-primary"
+                            disabled={isSubmitting}
                         >
-                            Register
+                            {isSubmitting ? 'Submitting...' : 'Register'}
                         </button>
                     </div>
                 </div>
             </form>
 
-            {/*Redirect to Login button*/}
+            {/* Redirect to Login button */}
             <div className="mb-3 row">
                 <div className="col-sm-10 offset-sm-2">
                     <button
