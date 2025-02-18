@@ -1,8 +1,8 @@
 import React from "react";
-import { useUser } from "../context/UserContext"; // Import the context
+import { useUser } from "../context/UserContext";
 
 export default function Profile() {
-    const { user } = useUser(); // Access user data from context
+    const { user } = useUser();
 
     if (!user) {
         return <div className="container">Please log in to view your profile.</div>;

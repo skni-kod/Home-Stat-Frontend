@@ -1,100 +1,128 @@
 import React, { useState } from 'react';
+import { Container, Box, Typography, TextField, Button, Link, Alert } from '@mui/material';
 import { useRedirect } from '../navigation/RedirectHandlers';
-import { useUser } from '../context/UserContext'; // Import the context
+import { useUser } from '../context/UserContext';
 
 export default function Login() {
-    const { loginUser } = useUser(); // Get the loginUser function from context
+    const { loginUser } = useUser();
     const handleRedirectToRegister = useRedirect('/register');
     const handleRedirectToProfile = useRedirect('/profile');
 
-    // Initialize state for form fields
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: '',
     });
+    const [error, setError] = useState('');
 
-    // Handle form input change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value
+            [name]: value,
         }));
     };
 
-    // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
 
-        // Simulate a successful login with the entered email
-        const loggedInUser = {
-            email: formData.email,
-            name: 'John Doe',  //TODO: get user's name from database (findByEmail)
-        };
+        if (!formData.email || !formData.password) {
+            setError('Both email and password are required.');
+            return;
+        }
 
-        // Update the user data in context
-        loginUser(loggedInUser);
+        try {
+            // TODO: Replace with login endpoint when it's made on backend
+            const response = await fetch('http://localhost:1111/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
 
-        // Simulate redirect to profile
-        handleRedirectToProfile();
+            if (!response.ok) {
+                setError('Invalid credentials. Please try again.');
+                return;
+            }
+
+            const userData = await response.json();
+            loginUser(userData);
+            handleRedirectToProfile();
+        } catch (err) {
+            console.error('Login error:', err);
+            setError('An unexpected error occurred. Please try again later.');
+        }
     };
 
     return (
-        <div className="container">
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                {/* Email */}
-                <div className="mb-3 row">
-                    <label htmlFor="inputEmail" className="col-sm-2 col-form-label">Email</label>
-                    <div className="col-sm-10">
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="inputEmail"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                </div>
+        <Container maxWidth="sm">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    padding: 4,
+                    backgroundColor: 'background.paper',
+                    boxShadow: 3,
+                    borderRadius: 2,
+                }}
+            >
+                <Typography variant="h4" component="h1" align="center" gutterBottom>
+                    Login
+                </Typography>
 
-                {/* Password */}
-                <div className="mb-3 row">
-                    <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Password</label>
-                    <div className="col-sm-10">
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="inputPassword"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                </div>
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {error}
+                    </Alert>
+                )}
 
-                {/* Login Button */}
-                <div className="mb-3 row">
-                    <div className="col-sm-10 offset-sm-2">
-                        <button type="submit" className="btn btn-primary">Login</button>
-                    </div>
-                </div>
-            </form>
-
-            {/* Redirect to Register Button */}
-            <div className="mb-3 row">
-                <div className="col-sm-10 offset-sm-2">
-                    <button
-                        type="button"
-                        className="btn btn-link"
-                        onClick={handleRedirectToRegister}
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{
+                            mt: 3,
+                            mb: 2,
+                            backgroundColor: '#6D4C41',
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#5C4033',
+                            },
+                        }}
+                        disabled={!formData.email || !formData.password} // Disable button when fields are empty
                     >
-                        Don't have an account? Register
-                    </button>
-                </div>
-            </div>
-        </div>
+                        Login
+                    </Button>
+                    <Box textAlign="center">
+                        <Link component="button" variant="body2" onClick={handleRedirectToRegister}>
+                            Don't have an account? Register
+                        </Link>
+                    </Box>
+                </Box>
+            </Box>
+        </Container>
     );
 }
